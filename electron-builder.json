@@ -2,6 +2,7 @@
   "appId": "com.tef-printer.prepare",
   "files": ["dist-electron", "dist-react"],
   "icon": "./desktopIcon.png",
+  "extra-resources": ["dist-electron/preload.cjs"],
   "mac": {
     "target": "dmg"
   },
