@@ -2,6 +2,7 @@ import osUtils from 'os-utils';
 import fs from 'fs';
 import os from 'os';
 import { BrowserWindow } from 'electron';
+import { ipcWebContentsSend } from './utils.js';
 
 const POOLING_INTERVAL = 500;
 
@@ -10,22 +11,22 @@ export function poolResource(mainWindow: BrowserWindow) {
     const cpuUsage = await getCpuUsage();
     const ramUsage = getRamUsage();
     const storageUsage = getStorageData();
-    mainWindow.webContents.send('statistics', {cpuUsage, ramUsage, storageUsage: storageUsage.usage })
+    ipcWebContentsSend('statistics', mainWindow.webContents, {cpuUsage, ramUsage, storageUsage: storageUsage.usage })
   }, POOLING_INTERVAL);
 }
 
-export function getStaticData() {
+export function getStaticData(): StaticData {
   const totalStorage = getStorageData().total;
   const cpuModel = os.cpus()[0].model;
-  const totalMemoryGb = Math.floor(osUtils.totalmem() / 1024);
+  const totalMemoryGB = Math.floor(osUtils.totalmem() / 1024);
   return {
     totalStorage,
     cpuModel,
-    totalMemoryGb
+    totalMemoryGB
   }
 }
 
-export function getCpuUsage() {
+export function getCpuUsage(): Promise<number> {
   return new Promise(resolve => {
     osUtils.cpuUsage(resolve)
   })
