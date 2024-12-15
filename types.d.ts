@@ -17,7 +17,7 @@ type FrameWindowAction = 'CLOSE' | 'MAXIMIZE' | 'MINIMIZE'
 type EventPayloadMapping = {
   statistics: Statistics
   getStaticData: StaticData
-  // changeView: View;
+  changeView: View
   // sendFrameAction: FrameWindowAction;
 }
 
