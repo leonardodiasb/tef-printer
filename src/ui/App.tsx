@@ -1,16 +1,20 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import './App.css'
+import { BaseChart } from './components/BaseChart';
+import { useStatistics } from './hooks/useStatistics';
+import { Chart } from './components/Chart';
 
 function App() {
-  const [count, setCount] = useState(0)
-
-  useEffect(() => {
-    window.electron.subscribeStatistics(stats => console.log('stats', stats));
-  }, [])
+  const [count, setCount] = useState(0);
+  const statistics = useStatistics(10);
+  const cpuUsages = useMemo(() => {
+    return statistics.map((stat) => stat.cpuUsage)
+  }, [statistics]);
 
   return (
     <>
-      <div>
+      <div style={{ width: 200, height: 100 }}>
+        <Chart data={cpuUsages} maxDataPoints={10} selectedView="CPU" />
       </div>
       <h1>Vite + React</h1>
       <div className="card">
