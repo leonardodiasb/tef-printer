@@ -1,6 +1,5 @@
 import { BrowserWindow, Menu, app } from 'electron'
 import { ipcWebContentsSend, isDev } from './utils.js'
-import process from 'process'
 
 export function createMenu(mainWindow: BrowserWindow) {
   Menu.setApplicationMenu(

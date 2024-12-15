@@ -1,7 +1,6 @@
 import { app, BrowserWindow, Menu, Tray } from 'electron'
 import { getAssetPath } from './pathResolver.js'
 import path from 'path'
-import process from 'process'
 
 export const createTray = (mainWindow: BrowserWindow) => {
   const tray = new Tray(

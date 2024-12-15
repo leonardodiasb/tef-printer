@@ -22,8 +22,8 @@ export default [
   },
   {
     rules: {
-      'no-unused-vars': 'warn',
-      'no-undef': 'warn',
+      // 'no-unused-vars': 'warn',
+      // 'no-undef': 'warn',
       quotes: ['error', 'double'],
       semi: ['error', 'always'],
       indent: ['error', 2],
@@ -39,6 +39,10 @@ export default [
       'space-unary-ops': 'error',
       // "import/no-unresolved": "off",
       // "no-shadow": "off",
+      'no-unused-vars': 'warn',
+      '@typescript-eslint/no-unused-vars': ['error'],
+      'no-undef': 'off', // Disable the default no-undef rule
+      '@typescript-eslint/no-undef': 'off',
       'react/react-in-jsx-scope': 'off',
       ...pluginReactHooks.configs.recommended.rules
     }

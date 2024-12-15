@@ -27,9 +27,7 @@ interface Window {
   electron: {
     subscribeStatistics: (callback: (statistics: Statistics) => void) => void
     getStaticData: () => Promise<StaticData>
-    // subscribeChangeView: (
-    //   callback: (view: View) => void
-    // ) => UnsubscribeFunction;
+    subscribeChangeView: (callback: (view: View) => void) => void
     // sendFrameAction: (payload: FrameWindowAction) => void;
   }
 }
