@@ -10,11 +10,12 @@ export function ipcMainHandle<Key extends keyof EventPayloadMapping>(
   key: Key,
   handler: () => EventPayloadMapping[Key]
 ) {
-  ipcMain.handle(key, () => handler())
-  // ipcMain.handle(key, (event) => {
-  //   validateEventFrame(event.senderFrame);
-  //   return handler();
-  // });
+  ipcMain.handle(key, (event) => {
+    if (event.senderFrame) {
+      validateEventFrame(event.senderFrame);
+    }
+    return handler();
+  });
 } 
 
 // export function ipcMainOn<Key extends keyof EventPayloadMapping>(
@@ -35,11 +36,11 @@ export function ipcWebContentsSend<Key extends keyof EventPayloadMapping>(
   webContents.send(key, payload);
 }
 
-// export function validateEventFrame(frame: WebFrameMain) {
-//   if (isDev() && new URL(frame.url).host === 'localhost:5123') {
-//     return;
-//   }
-//   if (frame.url !== pathToFileURL(getUIPath()).toString()) {
-//     throw new Error('Malicious event');
-//   }
-// }
+export function validateEventFrame(frame: WebFrameMain) {
+  if (isDev() && new URL(frame.url).host === 'localhost:5123') {
+    return;
+  }
+  if (frame.url !== pathToFileURL(getUIPath()).toString()) {
+    throw new Error('Malicious event');
+  }
+}
