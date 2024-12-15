@@ -1,15 +1,14 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import './App.css'
-import { BaseChart } from './components/BaseChart';
-import { useStatistics } from './hooks/useStatistics';
-import { Chart } from './components/Chart';
+import { useStatistics } from './hooks/useStatistics'
+import { Chart } from './components/Chart'
 
 function App() {
-  const [count, setCount] = useState(0);
-  const statistics = useStatistics(10);
+  const [count, setCount] = useState(0)
+  const statistics = useStatistics(10)
   const cpuUsages = useMemo(() => {
     return statistics.map((stat) => stat.cpuUsage)
-  }, [statistics]);
+  }, [statistics])
 
   return (
     <>

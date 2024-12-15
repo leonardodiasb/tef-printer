@@ -1,4 +1,4 @@
-import { isDev } from "./utils.js"
+import { isDev } from './utils.js'
 import path from 'path'
 import { app } from 'electron'
 
@@ -11,9 +11,9 @@ export const getPreloadPath = () => {
 }
 
 export function getUIPath() {
-  return path.join(app.getAppPath(), '/dist-react/index.html');
+  return path.join(app.getAppPath(), '/dist-react/index.html')
 }
 
 export function getAssetPath() {
-  return path.join(app.getAppPath(), isDev() ? '.' : '..', '/src/assets');
+  return path.join(app.getAppPath(), isDev() ? '.' : '..', '/src/assets')
 }

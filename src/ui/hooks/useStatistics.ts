@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from 'react'
 
 export const useStatistics = (dataPointCount: number): Statistics[] => {
   const [value, setValue] = useState<Statistics[]>([])
@@ -10,10 +10,10 @@ export const useStatistics = (dataPointCount: number): Statistics[] => {
         if (newData.length > dataPointCount) {
           newData.shift()
         }
-        return newData;
+        return newData
       })
     })
     return unsub
   }, [])
-  return value;
+  return value
 }
