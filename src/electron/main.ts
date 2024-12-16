@@ -12,7 +12,8 @@ app.on('ready', () => {
   const mainWindow = new BrowserWindow({
     webPreferences: {
       preload: getPreloadPath()
-    }
+    },
+    frame: false
   })
   if (isDev()) {
     mainWindow.loadURL('http://localhost:5123')
