@@ -1,6 +1,6 @@
 import { app, BrowserWindow, Menu } from 'electron'
 import path from 'path'
-import { ipcMainHandle, isDev } from './utils.js'
+import { ipcMainHandle, ipcMainOn, isDev } from './utils.js'
 import { getStaticData, poolResource } from './resourceManager.js'
 import { getPreloadPath } from './pathResolver.js'
 import { createTray } from './tray.js'
@@ -12,8 +12,8 @@ app.on('ready', () => {
   const mainWindow = new BrowserWindow({
     webPreferences: {
       preload: getPreloadPath()
-    },
-    frame: false
+    }
+    // frame: false
   })
   if (isDev()) {
     mainWindow.loadURL('http://localhost:5123')
@@ -24,6 +24,20 @@ app.on('ready', () => {
 
   ipcMainHandle('getStaticData', () => {
     return getStaticData()
+  })
+
+  ipcMainOn('sendFrameAction', (payload) => {
+    switch (payload) {
+      case 'CLOSE':
+        mainWindow.close()
+        break
+      case 'MAXIMIZE':
+        mainWindow.maximize()
+        break
+      case 'MINIMIZE':
+        mainWindow.minimize()
+        break
+    }
   })
 
   createTray(mainWindow)
