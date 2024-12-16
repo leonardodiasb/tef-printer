@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu } from 'electron'
+import { app, BrowserWindow, globalShortcut, Menu } from 'electron'
 import path from 'path'
 import { ipcMainHandle, ipcMainOn, isDev } from './utils.js'
 import { getStaticData, poolResource } from './resourceManager.js'
@@ -21,6 +21,10 @@ app.on('ready', () => {
     mainWindow.loadFile(path.join(app.getAppPath(), '/dist-react/index.html'))
   }
   poolResource(mainWindow)
+
+  globalShortcut.register('CommandOrControl+X', () => {
+    console.log('CommandOrControl+X is pressed')
+  })
 
   ipcMainHandle('getStaticData', () => {
     return getStaticData()
