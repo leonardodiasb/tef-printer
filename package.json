@@ -1,7 +1,9 @@
 {
   "name": "tef-printer",
+  "author": "takeat",
+  "description": "tef printer testing description",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.2",
   "type": "module",
   "main": "dist-electron/main.js",
   "scripts": {
@@ -18,11 +20,18 @@
     "test:e2e": "playwright test",
     "test:unit": "vitest src"
   },
+  "repository": "https://github.com/leonardodiasb/tef-printer",
+  "publish": {
+    "provider": "github",
+    "releaseType": "release"
+  },
   "dependencies": {
+    "electron-updater": "^6.3.9",
     "os-utils": "^0.0.14",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "recharts": "^2.15.0",
+    "update-electron-app": "^3.1.0",
     "url": "^0.11.4"
   },
   "devDependencies": {
@@ -47,6 +56,7 @@
     "prettier": "3.4.2",
     "typescript": "~5.6.2",
     "typescript-eslint": "^8.18.0",
-    "vite": "^6.0.1"
+    "vite": "^6.0.1",
+    "vitest": "^2.1.8"
   }
 }

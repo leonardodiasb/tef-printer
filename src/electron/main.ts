@@ -5,8 +5,20 @@ import { getStaticData, poolResource } from './resourceManager.js'
 import { getPreloadPath } from './pathResolver.js'
 import { createTray } from './tray.js'
 import { createMenu } from './menu.js'
+import electronUpdater, { type AppUpdater } from 'electron-updater'
+// import { autoUpdater } from 'electron-updater'
+
+export function getAutoUpdater(): AppUpdater {
+  const { autoUpdater } = electronUpdater
+  return autoUpdater
+}
 
 Menu.setApplicationMenu(null)
+
+const autoUpdater = getAutoUpdater()
+
+autoUpdater.autoDownload = false
+autoUpdater.autoInstallOnAppQuit = true
 
 app.on('ready', () => {
   const mainWindow = new BrowserWindow({
@@ -20,6 +32,9 @@ app.on('ready', () => {
   } else {
     mainWindow.loadFile(path.join(app.getAppPath(), '/dist-react/index.html'))
   }
+
+  autoUpdater.checkForUpdates()
+
   poolResource(mainWindow)
 
   globalShortcut.register('CommandOrControl+X', () => {

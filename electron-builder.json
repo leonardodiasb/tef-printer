@@ -1,8 +1,8 @@
 {
-  "appId": "com.tef-printer.prepare",
+  "appId": "com.takeat.tef-printer",
   "files": ["dist-electron", "dist-react"],
   "icon": "./desktopIcon.png",
-  "extra-resources": ["dist-electron/preload.cjs", "src/assets/**"],
+  "extraResources": ["dist-electron/preload.cjs", "src/assets/**"],
   "mac": {
     "target": "dmg"
   },
@@ -11,6 +11,6 @@
     "category": "Utility"
   },
   "win": {
-    "target": ["portable", "msi"]
+    "target": ["portable", "msi", "nsis"]
   }
 }
