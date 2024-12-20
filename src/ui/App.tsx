@@ -66,6 +66,14 @@ function App() {
           />
         </div>
       </div>
+      <button onClick={handleCheckForUpdates}>Check for updates</button>
+      <button onClick={handleCheckForUpdatesAndNotify}>
+        Check for updates and Notify
+      </button>
+      <button onClick={handleDownloadAppUpdate}>Download Update</button>
+      <button onClick={handleInstallUpdateAndQuit}>
+        Install Update and Quit
+      </button>
     </div>
   )
 }
@@ -108,6 +116,26 @@ function SelectOption(props: {
 //     </header>
 //   )
 // }
+
+const handleCheckForUpdates = async () => {
+  const test = await window.electron.checkUpdates()
+  console.log('TESTE', test)
+}
+
+const handleCheckForUpdatesAndNotify = async () => {
+  const test = await window.electron.checkUpdatesAndNotify()
+  console.log('TESTE Notify', test)
+}
+
+const handleDownloadAppUpdate = async () => {
+  const testdownload = await window.electron.downloadAppUpdate()
+  console.log('testdownload', testdownload)
+}
+
+const handleInstallUpdateAndQuit = async () => {
+  const testInstall = await window.electron.installUpdateAndQuit()
+  console.log('testInstall', testInstall)
+}
 
 function useStaticData() {
   const [staticData, setStaticData] = useState<StaticData | null>(null)

@@ -14,8 +14,8 @@ export function createMenu(mainWindow: BrowserWindow) {
           },
           {
             label: 'DevTools',
-            click: () => mainWindow.webContents.openDevTools(),
-            visible: isDev()
+            click: () => mainWindow.webContents.openDevTools()
+            // visible: isDev()
           },
           {
             label: `Version ${app.getVersion()}`

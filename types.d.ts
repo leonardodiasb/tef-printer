@@ -19,6 +19,11 @@ type EventPayloadMapping = {
   getStaticData: StaticData
   changeView: View
   sendFrameAction: FrameWindowAction
+  downloadAppUpdate: AppUpdater
+  checkUpdates: void
+  checkUpdatesAndNotify: void
+  installUpdateAndQuit: void
+  // sendLogFromBackToFront: string
 }
 
 type UnsubscribeFunction = () => void
@@ -29,5 +34,10 @@ interface Window {
     getStaticData: () => Promise<StaticData>
     subscribeChangeView: (callback: (view: View) => void) => void
     sendFrameAction: (payload: FrameWindowAction) => void
+    downloadAppUpdate: () => AppUpdater
+    checkUpdates: () => void
+    checkUpdatesAndNotify: () => void
+    installUpdateAndQuit: () => void
+    // sendLogFromBackToFront: (log: string) => void
   }
 }

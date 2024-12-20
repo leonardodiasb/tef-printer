@@ -3,7 +3,7 @@
   "author": "takeat",
   "description": "tef printer testing description",
   "private": true,
-  "version": "0.0.2",
+  "version": "0.0.0",
   "type": "module",
   "main": "dist-electron/main.js",
   "scripts": {
@@ -20,7 +20,10 @@
     "test:e2e": "playwright test",
     "test:unit": "vitest src"
   },
-  "repository": "https://github.com/leonardodiasb/tef-printer",
+  "repository": {
+    "url": "https://github.com/leonardodiasb/tef-printer.git",
+    "type": "git"
+  },
   "publish": {
     "provider": "github",
     "releaseType": "release"

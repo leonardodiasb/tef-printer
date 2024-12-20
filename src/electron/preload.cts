@@ -10,7 +10,12 @@ electron.contextBridge.exposeInMainWorld('electron', {
   },
   sendFrameAction: (payload) => {
     ipcSend('sendFrameAction', payload)
-  }
+  },
+  downloadAppUpdate: () => ipcInvoke('downloadAppUpdate'),
+  checkUpdates: () => ipcInvoke('checkUpdates'),
+  checkUpdatesAndNotify: () => ipcInvoke('checkUpdatesAndNotify'),
+  installUpdateAndQuit: () => ipcInvoke('installUpdateAndQuit')
+  // sendLogFromBackToFront: (log) => ipcSend('sendLogFromBackToFront', log)
 } satisfies Window['electron'])
 
 function ipcInvoke<Key extends keyof EventPayloadMapping>(
