@@ -67,9 +67,6 @@ function App() {
         </div>
       </div>
       <button onClick={handleCheckForUpdates}>Check for updates</button>
-      <button onClick={handleCheckForUpdatesAndNotify}>
-        Check for updates and Notify
-      </button>
       <button onClick={handleDownloadAppUpdate}>Download Update</button>
       <button onClick={handleInstallUpdateAndQuit}>
         Install Update and Quit
@@ -98,33 +95,9 @@ function SelectOption(props: {
   )
 }
 
-// function Header() {
-//   return (
-//     <header>
-//       <button
-//         id="close"
-//         onClick={() => window.electron.sendFrameAction('CLOSE')}
-//       />
-//       <button
-//         id="minimize"
-//         onClick={() => window.electron.sendFrameAction('MINIMIZE')}
-//       />
-//       <button
-//         id="maximize"
-//         onClick={() => window.electron.sendFrameAction('MAXIMIZE')}
-//       />
-//     </header>
-//   )
-// }
-
 const handleCheckForUpdates = async () => {
   const test = await window.electron.checkUpdates()
   console.log('TESTE', test)
-}
-
-const handleCheckForUpdatesAndNotify = async () => {
-  const test = await window.electron.checkUpdatesAndNotify()
-  console.log('TESTE Notify', test)
 }
 
 const handleDownloadAppUpdate = async () => {

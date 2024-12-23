@@ -21,9 +21,7 @@ type EventPayloadMapping = {
   sendFrameAction: FrameWindowAction
   downloadAppUpdate: AppUpdater
   checkUpdates: void
-  checkUpdatesAndNotify: void
   installUpdateAndQuit: void
-  // sendLogFromBackToFront: string
 }
 
 type UnsubscribeFunction = () => void
@@ -36,8 +34,6 @@ interface Window {
     sendFrameAction: (payload: FrameWindowAction) => void
     downloadAppUpdate: () => AppUpdater
     checkUpdates: () => void
-    checkUpdatesAndNotify: () => void
     installUpdateAndQuit: () => void
-    // sendLogFromBackToFront: (log: string) => void
   }
 }
