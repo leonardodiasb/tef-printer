@@ -65,14 +65,14 @@ function App() {
             maxDataPoints={10}
           />
         </div>
+        <button onClick={handleDownloadAppUpdate}>Check for updates</button>
       </div>
-      <button onClick={handleCheckForUpdates}>Check for updates</button>
-      <button onClick={handleDownloadAppUpdate}>Download Update</button>
-      <button onClick={handleInstallUpdateAndQuit}>
-        Install Update and Quit
-      </button>
     </div>
   )
+}
+
+const handleDownloadAppUpdate = async () => {
+  await window.electron.downloadAppUpdate()
 }
 
 function SelectOption(props: {
@@ -93,21 +93,6 @@ function SelectOption(props: {
       </div>
     </button>
   )
-}
-
-const handleCheckForUpdates = async () => {
-  const test = await window.electron.checkUpdates()
-  console.log('TESTE', test)
-}
-
-const handleDownloadAppUpdate = async () => {
-  const testdownload = await window.electron.downloadAppUpdate()
-  console.log('testdownload', testdownload)
-}
-
-const handleInstallUpdateAndQuit = async () => {
-  const testInstall = await window.electron.installUpdateAndQuit()
-  console.log('testInstall', testInstall)
 }
 
 function useStaticData() {

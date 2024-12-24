@@ -1,31 +1,13 @@
 import { app, BrowserWindow, globalShortcut, ipcMain, Menu } from 'electron'
 import path from 'path'
-import { ipcMainHandle, ipcMainOn, isDev } from './utils.js'
+import { ipcMainHandle, isDev } from './utils.js'
 import { getStaticData, poolResource } from './resourceManager.js'
 import { getPreloadPath } from './pathResolver.js'
 import { createTray } from './tray.js'
 import { createMenu } from './menu.js'
-// import electronUpdater from 'electron-updater'
+import AutoUpdaterService from './services/AutoUpdaterService.js'
 
 Menu.setApplicationMenu(null)
-
-// const { autoUpdater } = electronUpdater
-
-// autoUpdater.forceDevUpdateConfig = true
-// autoUpdater.autoDownload = false
-// autoUpdater.autoInstallOnAppQuit = true
-
-// const dialogWindow = () => {
-//   const dialog = new BrowserWindow({
-//     width: 800,
-//     height: 600,
-//     webPreferences: {
-//       preload: getPreloadPath()
-//     }
-//   })
-//   dialog.loadFile(path.join(app.getAppPath(), '/dist-react/index.html'))
-//   return dialog
-// }
 
 app.on('ready', () => {
   const mainWindow = new BrowserWindow({
@@ -40,6 +22,8 @@ app.on('ready', () => {
     mainWindow.loadFile(path.join(app.getAppPath(), '/dist-react/index.html'))
   }
 
+  const autoUpdaterService = new AutoUpdaterService(mainWindow)
+
   poolResource(mainWindow)
 
   globalShortcut.register('CommandOrControl+X', () => {
@@ -50,21 +34,13 @@ app.on('ready', () => {
     return getStaticData()
   })
 
-  // ipcMainHandle('downloadAppUpdate', () => {
-  //   return autoUpdater.downloadUpdate()
-  // })
-
-  // ipcMainHandle('installUpdateAndQuit', () => {
-  //   return autoUpdater.quitAndInstall()
-  // })
-
-  // ipcMainHandle('checkUpdates', () => {
-  //   return autoUpdater.checkForUpdates()
-  // })
+  ipcMainHandle('downloadAppUpdate', async () => {
+    autoUpdaterService.updateApp()
+  })
 
   createTray(mainWindow)
   handleCloseEvents(mainWindow)
-  createMenu(mainWindow)
+  createMenu(mainWindow, autoUpdaterService)
 })
 
 const handleCloseEvents = (mainWindow: BrowserWindow) => {

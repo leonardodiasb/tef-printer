@@ -12,8 +12,10 @@ electron.contextBridge.exposeInMainWorld('electron', {
     ipcSend('sendFrameAction', payload)
   },
   downloadAppUpdate: () => ipcInvoke('downloadAppUpdate'),
-  checkUpdates: () => ipcInvoke('checkUpdates'),
-  installUpdateAndQuit: () => ipcInvoke('installUpdateAndQuit')
+  installUpdateAndQuit: () => ipcInvoke('installUpdateAndQuit'),
+  updateNotificationWindow: (callback) => {
+    ipcOn('updateNotificationWindow', (update) => callback(update))
+  }
 } satisfies Window['electron'])
 
 function ipcInvoke<Key extends keyof EventPayloadMapping>(

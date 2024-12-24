@@ -1,7 +1,11 @@
 import { BrowserWindow, Menu, app } from 'electron'
 import { isDev } from './utils.js'
+import { AutoUpdaterServiceInterface } from './services/AutoUpdaterService.js'
 
-export function createMenu(mainWindow: BrowserWindow) {
+export function createMenu(
+  mainWindow: BrowserWindow,
+  autoUpdaterService: AutoUpdaterServiceInterface
+) {
   Menu.setApplicationMenu(
     Menu.buildFromTemplate([
       {
@@ -18,13 +22,16 @@ export function createMenu(mainWindow: BrowserWindow) {
           },
           {
             label: 'Check for updates',
-            click: () => window.electron.checkUpdates()
+            click: () => {
+              autoUpdaterService.checkForUpdates()
+            }
           },
           {
             type: 'separator'
           },
           {
             label: 'Quit',
+            accelerator: process.platform === 'darwin' ? 'Command+Q' : 'Alt+F4',
             click: app.quit
           }
         ]

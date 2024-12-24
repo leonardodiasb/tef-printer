@@ -1,28 +1,32 @@
 /* eslint-disable prettier/prettier */
-import { BrowserWindow } from 'electron'
+import { app, BrowserWindow } from 'electron'
 import electronUpdater, { type AppUpdater } from 'electron-updater'
-import { isDev } from '../utils.js'
+import { ipcWebContentsSend, isDev } from '../utils.js'
+import path from 'path'
+import { getPreloadPath } from '../pathResolver.js'
 
 const { autoUpdater } = electronUpdater
 
-interface AutoUpdaterServiceInterface {
+export interface AutoUpdaterServiceInterface {
   checkForUpdates(): void
   updateApp(): void
 }
 
 export default class AutoUpdaterService implements AutoUpdaterServiceInterface {
-  private window: BrowserWindow
+  private mainWindow: BrowserWindow
+  private notificationWindow: BrowserWindow | null = null
   private enableAutoDownload = false
   private enableAutoInstallOnAppQuit = false
   private enableDevMode = isDev()
 
   constructor(mainWindow: BrowserWindow) {
-    this.window = mainWindow
+    this.mainWindow = mainWindow
     this.configureAutoUpdater()
     this.setupListeners()
   }
 
   public checkForUpdates = () => {
+    this.createNotificationWindow()
     autoUpdater.checkForUpdates()
   }
 
@@ -40,28 +44,79 @@ export default class AutoUpdaterService implements AutoUpdaterServiceInterface {
     if (!autoUpdater) {
       return
     }
-    autoUpdater.on('update-available', (info) => {
-      console.log(`Update available. Current version `)
+    autoUpdater.on('checking-for-update', () => {
+      this.updateNotificationContent('CHECKING_FOR_UPDATES', 'Checking for updates...', true)
     })
 
-    autoUpdater.on('checking-for-update', () => {
-      console.log('Checking for update...')
+    autoUpdater.on('update-available', (info) => {
+      this.updateNotificationContent('UPDATE_AVAILABLE', info, false)
     })
 
     autoUpdater.on('update-not-available', (info) => {
-      console.log(`No update available. Current version `)
+      this.updateNotificationContent('UPDATE_NOT_AVAILABLE', info, false)
+      // this.closeNotificationWindowAfterDelay()
     })
 
     autoUpdater.on('download-progress', (progress) => {
-      console.log(`Download progress ${progress.percent}`)
+      this.updateNotificationContent('DOWNLOAD_PROGRESS', {progress, string: `Download progress: ${progress.percent.toFixed(2)}%`}, true)
     })
 
     autoUpdater.on('update-downloaded', (info) => {
-      console.log(`Update downloaded. Current version `)
+      this.updateNotificationContent('UPDATE_DOWNLOADED', info, false)
+      // this.closeNotificationWindowAfterDelay()
     })
 
     autoUpdater.on('error', (error) => {
-      console.log(`Error in auto-updater. ${error}`)
+      this.updateNotificationContent('ERROR', error, false)
+      // this.closeNotificationWindowAfterDelay()
     })
+  }
+
+  private createNotificationWindow = () => {
+    if (this.notificationWindow) return
+  
+    this.notificationWindow = new BrowserWindow({
+      width: 1400,
+      height: 1200,
+      // resizable: false,
+      // alwaysOnTop: true,
+      parent: this.mainWindow,
+      // modal: true,
+      webPreferences: {
+        contextIsolation: true,
+        nodeIntegration: false,
+        preload: getPreloadPath()
+      },
+    })
+    this.notificationWindow.webContents.openDevTools()
+  
+    if (isDev()) {
+      this.notificationWindow.loadURL('http://localhost:5123/notification.html')
+    } else {
+      this.notificationWindow.loadFile(path.join(app.getAppPath(), '/dist-react/notification.html'))
+    }
+
+    this.notificationWindow.on('closed', () => {
+      this.notificationWindow = null;
+    });
+  }
+
+  private updateNotificationContent = (type: UpdateNotificaionWindowTypes, content: any, isLoading: boolean) => {
+    if (this.notificationWindow) {
+      ipcWebContentsSend('updateNotificationWindow', this.notificationWindow.webContents, {
+        type,
+        content,
+        isLoading
+      })
+    }
+  }
+
+  private closeNotificationWindowAfterDelay = (delay: number = 3000) => {
+    setTimeout(() => {
+      if (this.notificationWindow) {
+        this.notificationWindow.close()
+        this.notificationWindow = null
+      }
+    }, delay)
   }
 }

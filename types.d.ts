@@ -14,14 +14,28 @@ type View = 'CPU' | 'RAM' | 'STORAGE'
 
 type FrameWindowAction = 'CLOSE' | 'MAXIMIZE' | 'MINIMIZE'
 
+type UpdateNotificaionWindowTypes =
+  | 'CHECKING_FOR_UPDATES'
+  | 'UPDATE_AVAILABLE'
+  | 'UPDATE_NOT_AVAILABLE'
+  | 'DOWNLOAD_PROGRESS'
+  | 'UPDATE_DOWNLOADED'
+  | 'ERROR'
+
+type UpdateNotificationWindow = {
+  type: UpdateNotificaionWindowTypes
+  content: any
+  isLoading: boolean
+}
+
 type EventPayloadMapping = {
   statistics: Statistics
   getStaticData: StaticData
   changeView: View
   sendFrameAction: FrameWindowAction
   downloadAppUpdate: AppUpdater
-  checkUpdates: void
   installUpdateAndQuit: void
+  updateNotificationWindow: UpdateNotificationWindow
 }
 
 type UnsubscribeFunction = () => void
@@ -33,7 +47,9 @@ interface Window {
     subscribeChangeView: (callback: (view: View) => void) => void
     sendFrameAction: (payload: FrameWindowAction) => void
     downloadAppUpdate: () => AppUpdater
-    checkUpdates: () => void
     installUpdateAndQuit: () => void
+    updateNotificationWindow: (
+      callback: (update: UpdateNotificationWindow) => void
+    ) => void
   }
 }
