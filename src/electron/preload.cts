@@ -1,16 +1,6 @@
 import electron from 'electron'
 
 electron.contextBridge.exposeInMainWorld('electron', {
-  subscribeStatistics: (callback) => {
-    ipcOn('statistics', (statistics) => callback(statistics))
-  },
-  getStaticData: () => ipcInvoke('getStaticData'),
-  subscribeChangeView: (callback) => {
-    ipcOn('changeView', (view) => callback(view))
-  },
-  sendFrameAction: (payload) => {
-    ipcSend('sendFrameAction', payload)
-  },
   downloadAppUpdate: () => ipcInvoke('downloadAppUpdate'),
   installUpdateAndQuit: () => ipcInvoke('installUpdateAndQuit'),
   updateNotificationWindow: (callback) => {

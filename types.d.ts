@@ -1,19 +1,3 @@
-type Statistics = {
-  cpuUsage: number
-  ramUsage: number
-  storageUsage: number
-}
-
-type StaticData = {
-  totalStorage: number
-  cpuModel: string
-  totalMemoryGB: number
-}
-
-type View = 'CPU' | 'RAM' | 'STORAGE'
-
-type FrameWindowAction = 'CLOSE' | 'MAXIMIZE' | 'MINIMIZE'
-
 type UpdateNotificaionWindowTypes =
   | 'CHECKING_FOR_UPDATES'
   | 'UPDATE_AVAILABLE'
@@ -29,10 +13,6 @@ type UpdateNotificationWindow = {
 }
 
 type EventPayloadMapping = {
-  statistics: Statistics
-  getStaticData: StaticData
-  changeView: View
-  sendFrameAction: FrameWindowAction
   downloadAppUpdate: AppUpdater
   installUpdateAndQuit: void
   updateNotificationWindow: UpdateNotificationWindow
@@ -42,10 +22,6 @@ type UnsubscribeFunction = () => void
 
 interface Window {
   electron: {
-    subscribeStatistics: (callback: (statistics: Statistics) => void) => void
-    getStaticData: () => Promise<StaticData>
-    subscribeChangeView: (callback: (view: View) => void) => void
-    sendFrameAction: (payload: FrameWindowAction) => void
     downloadAppUpdate: () => AppUpdater
     installUpdateAndQuit: () => void
     updateNotificationWindow: (

@@ -1,7 +1,6 @@
-import { app, BrowserWindow, globalShortcut, ipcMain, Menu } from 'electron'
+import { app, BrowserWindow, globalShortcut, Menu } from 'electron'
 import path from 'path'
 import { ipcMainHandle, isDev } from './utils.js'
-import { getStaticData, poolResource } from './resourceManager.js'
 import { getPreloadPath } from './pathResolver.js'
 import { createTray } from './tray.js'
 import { createMenu } from './menu.js'
@@ -23,16 +22,6 @@ app.on('ready', () => {
   }
 
   const autoUpdaterService = new AutoUpdaterService(mainWindow)
-
-  poolResource(mainWindow)
-
-  globalShortcut.register('CommandOrControl+X', () => {
-    console.log('CommandOrControl+X is pressed')
-  })
-
-  ipcMainHandle('getStaticData', () => {
-    return getStaticData()
-  })
 
   ipcMainHandle('downloadAppUpdate', async () => {
     autoUpdaterService.updateApp()

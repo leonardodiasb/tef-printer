@@ -45,7 +45,11 @@ export default class AutoUpdaterService implements AutoUpdaterServiceInterface {
       return
     }
     autoUpdater.on('checking-for-update', () => {
-      this.updateNotificationContent('CHECKING_FOR_UPDATES', 'Checking for updates...', true)
+      this.updateNotificationContent(
+        'CHECKING_FOR_UPDATES',
+        'Checking for updates...',
+        true
+      )
     })
 
     autoUpdater.on('update-available', (info) => {
@@ -58,7 +62,14 @@ export default class AutoUpdaterService implements AutoUpdaterServiceInterface {
     })
 
     autoUpdater.on('download-progress', (progress) => {
-      this.updateNotificationContent('DOWNLOAD_PROGRESS', {progress, string: `Download progress: ${progress.percent.toFixed(2)}%`}, true)
+      this.updateNotificationContent(
+        'DOWNLOAD_PROGRESS',
+        {
+          progress,
+          string: `Download progress: ${progress.percent.toFixed(2)}%`
+        },
+        true
+      )
     })
 
     autoUpdater.on('update-downloaded', (info) => {
@@ -74,40 +85,51 @@ export default class AutoUpdaterService implements AutoUpdaterServiceInterface {
 
   private createNotificationWindow = () => {
     if (this.notificationWindow) return
-  
+
     this.notificationWindow = new BrowserWindow({
-      width: 1400,
-      height: 1200,
-      // resizable: false,
-      // alwaysOnTop: true,
+      width: 400,
+      height: 200,
+      resizable: false,
+      alwaysOnTop: true,
       parent: this.mainWindow,
-      // modal: true,
+      modal: true,
       webPreferences: {
         contextIsolation: true,
         nodeIntegration: false,
         preload: getPreloadPath()
-      },
+      }
     })
-    this.notificationWindow.webContents.openDevTools()
-  
+
+    this.notificationWindow.setMenu(null)
+
     if (isDev()) {
       this.notificationWindow.loadURL('http://localhost:5123/notification.html')
     } else {
-      this.notificationWindow.loadFile(path.join(app.getAppPath(), '/dist-react/notification.html'))
+      this.notificationWindow.loadFile(
+        path.join(app.getAppPath(), '/dist-react/notification.html')
+      )
     }
 
     this.notificationWindow.on('closed', () => {
-      this.notificationWindow = null;
-    });
+      this.notificationWindow = null
+    })
   }
 
-  private updateNotificationContent = (type: UpdateNotificaionWindowTypes, content: any, isLoading: boolean) => {
+  private updateNotificationContent = (
+    type: UpdateNotificaionWindowTypes,
+    content: any,
+    isLoading: boolean
+  ) => {
     if (this.notificationWindow) {
-      ipcWebContentsSend('updateNotificationWindow', this.notificationWindow.webContents, {
-        type,
-        content,
-        isLoading
-      })
+      ipcWebContentsSend(
+        'updateNotificationWindow',
+        this.notificationWindow.webContents,
+        {
+          type,
+          content,
+          isLoading
+        }
+      )
     }
   }
 
