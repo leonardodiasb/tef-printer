@@ -1,4 +1,4 @@
-import { app, BrowserWindow, globalShortcut, Menu } from 'electron'
+import { app, BrowserWindow, Menu } from 'electron'
 import path from 'path'
 import { ipcMainHandle, isDev } from './utils.js'
 import { getPreloadPath } from './pathResolver.js'
@@ -25,6 +25,10 @@ app.on('ready', () => {
 
   ipcMainHandle('downloadAppUpdate', async () => {
     autoUpdaterService.updateApp()
+  })
+
+  ipcMainHandle('closeNotificationWindow', () => {
+    autoUpdaterService.closeNotificationWindow()
   })
 
   createTray(mainWindow)

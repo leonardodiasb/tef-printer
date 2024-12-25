@@ -1,21 +1,40 @@
 import { useState, useEffect } from 'react'
 import { ClipLoader } from 'react-spinners'
+import { Button } from 'takeat-design-system-ui-kit'
 
 const UpdateNotification = () => {
-  const [content, setContent] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [type, setType] = useState<UpdateNotificaionWindowTypes>(
+    'CHECKING_FOR_UPDATES'
+  )
+  const [loadingButton, setLoadingButton] = useState(false)
+  const [newVersion, setNewVersion] = useState('')
+  const [newVersionChangelog, setNewVersionChangelog] = useState('')
+  const [downloadProgressPercentage, setDownloadProgressPercentage] =
+    useState('')
 
   const handleDownloadAppUpdate = async () => {
-    console.log('window', window)
-    console.log('window.electron', window.electron)
+    setLoadingButton(true)
     await window.electron.downloadAppUpdate()
   }
 
+  const handleCloseNotificationWindow = () => {
+    window.electron.closeNotificationWindow()
+  }
+
   useEffect(() => {
+    setLoadingButton(false)
     return window.electron.updateNotificationWindow((update) => {
       console.log('updateR', update)
-      setContent(update.type)
-      setLoading(update.isLoading)
+      if (update.type === 'UPDATE_AVAILABLE') {
+        // setNewVersion(update.content.version)
+        // setNewVersionChangelog(update.content.releaseNotes)
+      }
+      if (update.type === 'DOWNLOAD_PROGRESS') {
+        // setDownloadProgressPercentage(
+        //   update.content.progress.percent.toFixed(2)
+        // )
+      }
+      setType(update.type)
     })
   }, [])
 
@@ -26,30 +45,182 @@ const UpdateNotification = () => {
         alignItems: 'center',
         justifyContent: 'center',
         height: '100vh',
-        fontFamily: 'Arial, sans-serif',
         backgroundColor: '#f0f0f0',
-        padding: '20px',
         boxSizing: 'border-box',
-        textAlign: 'center'
+        textAlign: 'center',
+        gap: '16px'
       }}
     >
-      {loading ? (
-        <ClipLoader color="black" size={30} speedMultiplier={0.7} />
-      ) : (
-        <>
-          {content && (
+      <div
+        style={{
+          position: 'absolute',
+          top: 16,
+          right: 16,
+          cursor: 'pointer',
+          fontSize: 24,
+          fontWeight: 600,
+          width: 24,
+          height: 24
+        }}
+        onClick={handleCloseNotificationWindow}
+      >
+        X
+      </div>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'stretch',
+          gap: '16px'
+        }}
+      >
+        <img src="Tkt.svg" alt="logo" width={100} />
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: '220px',
+            textAlign: 'left'
+          }}
+        >
+          {type === 'CHECKING_FOR_UPDATES' && (
             <>
-              {content === 'UPDATE_AVAILABLE' && (
-                <div>
-                  <h1>Update Available</h1>
-                  <button onClick={handleDownloadAppUpdate}>Download</button>
-                </div>
-              )}
-              <div>{content}</div>
+              <p style={{ fontSize: 14, width: '100%' }}>
+                Procurando por atualizações...
+              </p>
+              <div style={{ marginBottom: 8 }}>
+                <ClipLoader color="black" size={30} speedMultiplier={0.7} />
+              </div>
             </>
           )}
-        </>
-      )}
+          {type === 'UPDATE_AVAILABLE' && (
+            <>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 8,
+                  width: '100%'
+                }}
+              >
+                <p style={{ fontSize: 14 }}>Nova versão: {newVersion}.</p>
+                <p style={{ fontSize: 10 }}>
+                  Changelog:
+                  <br />
+                  {newVersionChangelog}
+                </p>
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  gap: 8,
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  width: '100%'
+                }}
+              >
+                <Button
+                  style={{ fontSize: 12, padding: 12, height: 24, width: 80 }}
+                  onClick={handleCloseNotificationWindow}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  disabled={loadingButton}
+                  isLoading={loadingButton}
+                  style={{ fontSize: 12, padding: 12, height: 24, width: 80 }}
+                  onClick={handleDownloadAppUpdate}
+                >
+                  Baixar
+                </Button>
+              </div>
+            </>
+          )}
+          {type === 'UPDATE_NOT_AVAILABLE' && (
+            <>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 8,
+                  width: '100%'
+                }}
+              >
+                <p style={{ fontSize: 14 }}>Nenhum update disponível.</p>
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  gap: 8,
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  width: '100%'
+                }}
+              >
+                <Button
+                  style={{ fontSize: 12, padding: 12, height: 24, width: 80 }}
+                  onClick={handleCloseNotificationWindow}
+                >
+                  Cancelar
+                </Button>
+              </div>
+            </>
+          )}
+          {type === 'DOWNLOAD_PROGRESS' && (
+            <>
+              <p style={{ fontSize: 16, marginTop: 16 }}>
+                Baixando... {downloadProgressPercentage}%
+              </p>
+              <div style={{ marginBottom: 8 }}>
+                <ClipLoader color="black" size={30} speedMultiplier={0.7} />
+              </div>
+            </>
+          )}
+          {type === 'UPDATE_DOWNLOADED' && (
+            <>
+              <p style={{ fontSize: 14, width: '100%' }}>
+                Reiniciando aplicativo para instalação.
+              </p>
+              <div style={{ marginBottom: 8 }}>
+                <ClipLoader color="black" size={30} speedMultiplier={0.7} />
+              </div>
+            </>
+          )}
+          {type === 'ERROR' && (
+            <>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 8,
+                  width: '100%'
+                }}
+              >
+                <p style={{ fontSize: 14, width: '100%' }}>
+                  Algum erro ocorreu.
+                </p>
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  gap: 8,
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  width: '100%'
+                }}
+              >
+                <Button
+                  style={{ fontSize: 12, padding: 12, height: 24, width: 80 }}
+                  onClick={handleCloseNotificationWindow}
+                >
+                  Cancelar
+                </Button>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
     </div>
   )
 }

@@ -1,3 +1,4 @@
+import { Button, Spinner } from 'takeat-design-system-ui-kit'
 import './App.css'
 
 function App() {

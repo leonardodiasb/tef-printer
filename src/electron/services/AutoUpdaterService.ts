@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { app, BrowserWindow } from 'electron'
-import electronUpdater, { type AppUpdater } from 'electron-updater'
+import electronUpdater from 'electron-updater'
 import { ipcWebContentsSend, isDev } from '../utils.js'
 import path from 'path'
 import { getPreloadPath } from '../pathResolver.js'
@@ -34,6 +34,13 @@ export default class AutoUpdaterService implements AutoUpdaterServiceInterface {
     autoUpdater.downloadUpdate()
   }
 
+  public closeNotificationWindow = () => {
+    if (this.notificationWindow) {
+      this.notificationWindow.close()
+      this.notificationWindow = null
+    }
+  }
+
   private configureAutoUpdater = () => {
     autoUpdater.forceDevUpdateConfig = this.enableDevMode
     autoUpdater.autoInstallOnAppQuit = this.enableAutoInstallOnAppQuit
@@ -48,16 +55,15 @@ export default class AutoUpdaterService implements AutoUpdaterServiceInterface {
       this.updateNotificationContent(
         'CHECKING_FOR_UPDATES',
         'Checking for updates...',
-        true
       )
     })
 
     autoUpdater.on('update-available', (info) => {
-      this.updateNotificationContent('UPDATE_AVAILABLE', info, false)
+      this.updateNotificationContent('UPDATE_AVAILABLE', info)
     })
 
     autoUpdater.on('update-not-available', (info) => {
-      this.updateNotificationContent('UPDATE_NOT_AVAILABLE', info, false)
+      this.updateNotificationContent('UPDATE_NOT_AVAILABLE', info)
       // this.closeNotificationWindowAfterDelay()
     })
 
@@ -68,17 +74,17 @@ export default class AutoUpdaterService implements AutoUpdaterServiceInterface {
           progress,
           string: `Download progress: ${progress.percent.toFixed(2)}%`
         },
-        true
       )
     })
 
     autoUpdater.on('update-downloaded', (info) => {
-      this.updateNotificationContent('UPDATE_DOWNLOADED', info, false)
+      this.updateNotificationContent('UPDATE_DOWNLOADED', info)
+      autoUpdater.quitAndInstall()
       // this.closeNotificationWindowAfterDelay()
     })
 
     autoUpdater.on('error', (error) => {
-      this.updateNotificationContent('ERROR', error, false)
+      this.updateNotificationContent('ERROR', error)
       // this.closeNotificationWindowAfterDelay()
     })
   }
@@ -118,7 +124,6 @@ export default class AutoUpdaterService implements AutoUpdaterServiceInterface {
   private updateNotificationContent = (
     type: UpdateNotificaionWindowTypes,
     content: any,
-    isLoading: boolean
   ) => {
     if (this.notificationWindow) {
       ipcWebContentsSend(
@@ -127,18 +132,8 @@ export default class AutoUpdaterService implements AutoUpdaterServiceInterface {
         {
           type,
           content,
-          isLoading
         }
       )
     }
-  }
-
-  private closeNotificationWindowAfterDelay = (delay: number = 3000) => {
-    setTimeout(() => {
-      if (this.notificationWindow) {
-        this.notificationWindow.close()
-        this.notificationWindow = null
-      }
-    }, delay)
   }
 }

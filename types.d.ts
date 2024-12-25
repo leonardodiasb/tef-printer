@@ -9,13 +9,13 @@ type UpdateNotificaionWindowTypes =
 type UpdateNotificationWindow = {
   type: UpdateNotificaionWindowTypes
   content: any
-  isLoading: boolean
 }
 
 type EventPayloadMapping = {
   downloadAppUpdate: AppUpdater
   installUpdateAndQuit: void
   updateNotificationWindow: UpdateNotificationWindow
+  closeNotificationWindow: void
 }
 
 type UnsubscribeFunction = () => void
@@ -27,5 +27,6 @@ interface Window {
     updateNotificationWindow: (
       callback: (update: UpdateNotificationWindow) => void
     ) => void
+    closeNotificationWindow: () => void
   }
 }
