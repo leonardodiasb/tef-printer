@@ -14,6 +14,10 @@ export function getUIPath() {
   return path.join(app.getAppPath(), '/dist-react/index.html')
 }
 
+export function getUINotificationPath() {
+  return path.join(app.getAppPath(), '/dist-react/notification.html')
+}
+
 export function getAssetPath() {
   return path.join(app.getAppPath(), isDev() ? '.' : '..', '/src/assets')
 }
