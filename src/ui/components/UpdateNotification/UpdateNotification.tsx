@@ -104,7 +104,7 @@ const UpdateNotification = () => {
                   width: '100%'
                 }}
               >
-                <p style={{ fontSize: 14 }}>Nova versão: {newVersion}.</p>
+                <p style={{ fontSize: 14 }}>Nova versão: v{newVersion}.</p>
                 <p style={{ fontSize: 10 }}>Changelog:</p>
                 <div
                   style={{ fontSize: 10, marginLeft: 8 }}

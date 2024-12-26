@@ -4,7 +4,7 @@ function App() {
   return (
     <div className="App">
       <div className="main">
-        <div>App version 124</div>
+        <div>App version v0.0.1</div>
       </div>
     </div>
   )
