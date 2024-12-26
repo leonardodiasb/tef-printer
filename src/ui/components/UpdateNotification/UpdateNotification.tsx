@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { ClipLoader } from 'react-spinners'
-import { Button } from 'takeat-design-system-ui-kit'
+import { Button, IconClose } from 'takeat-design-system-ui-kit'
+import TktSvg from '../../../assets/Tkt.svg'
 
 const UpdateNotification = () => {
   const [type, setType] = useState<UpdateNotificaionWindowTypes>(
@@ -24,15 +25,14 @@ const UpdateNotification = () => {
   useEffect(() => {
     setLoadingButton(false)
     return window.electron.updateNotificationWindow((update) => {
-      console.log('updateR', update)
       if (update.type === 'UPDATE_AVAILABLE') {
-        // setNewVersion(update.content.version)
-        // setNewVersionChangelog(update.content.releaseNotes)
+        setNewVersion(update.content.version)
+        setNewVersionChangelog(update.content.releaseNotes)
       }
       if (update.type === 'DOWNLOAD_PROGRESS') {
-        // setDownloadProgressPercentage(
-        //   update.content.progress.percent.toFixed(2)
-        // )
+        setDownloadProgressPercentage(
+          update.content.progress.percent.toFixed(2)
+        )
       }
       setType(update.type)
     })
@@ -54,8 +54,8 @@ const UpdateNotification = () => {
       <div
         style={{
           position: 'absolute',
-          top: 16,
-          right: 16,
+          top: 8,
+          right: 12,
           cursor: 'pointer',
           fontSize: 24,
           fontWeight: 600,
@@ -64,7 +64,7 @@ const UpdateNotification = () => {
         }}
         onClick={handleCloseNotificationWindow}
       >
-        X
+        <IconClose fontSize={24} />
       </div>
       <div
         style={{
@@ -73,7 +73,7 @@ const UpdateNotification = () => {
           gap: '16px'
         }}
       >
-        <img src="Tkt.svg" alt="logo" width={100} />
+        <img src={TktSvg} alt="logo" width={100} />
         <div
           style={{
             display: 'flex',
@@ -105,11 +105,11 @@ const UpdateNotification = () => {
                 }}
               >
                 <p style={{ fontSize: 14 }}>Nova versão: {newVersion}.</p>
-                <p style={{ fontSize: 10 }}>
-                  Changelog:
-                  <br />
-                  {newVersionChangelog}
-                </p>
+                <p style={{ fontSize: 10 }}>Changelog:</p>
+                <div
+                  style={{ fontSize: 10, marginLeft: 8 }}
+                  dangerouslySetInnerHTML={{ __html: newVersionChangelog }}
+                ></div>
               </div>
               <div
                 style={{

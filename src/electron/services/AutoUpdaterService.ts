@@ -54,7 +54,7 @@ export default class AutoUpdaterService implements AutoUpdaterServiceInterface {
     autoUpdater.on('checking-for-update', () => {
       this.updateNotificationContent(
         'CHECKING_FOR_UPDATES',
-        'Checking for updates...',
+        'Checking for updates...'
       )
     })
 
@@ -68,13 +68,10 @@ export default class AutoUpdaterService implements AutoUpdaterServiceInterface {
     })
 
     autoUpdater.on('download-progress', (progress) => {
-      this.updateNotificationContent(
-        'DOWNLOAD_PROGRESS',
-        {
-          progress,
-          string: `Download progress: ${progress.percent.toFixed(2)}%`
-        },
-      )
+      this.updateNotificationContent('DOWNLOAD_PROGRESS', {
+        progress,
+        string: `Download progress: ${progress.percent.toFixed(2)}%`
+      })
     })
 
     autoUpdater.on('update-downloaded', (info) => {
@@ -123,7 +120,7 @@ export default class AutoUpdaterService implements AutoUpdaterServiceInterface {
 
   private updateNotificationContent = (
     type: UpdateNotificaionWindowTypes,
-    content: any,
+    content: any
   ) => {
     if (this.notificationWindow) {
       ipcWebContentsSend(
@@ -131,7 +128,7 @@ export default class AutoUpdaterService implements AutoUpdaterServiceInterface {
         this.notificationWindow.webContents,
         {
           type,
-          content,
+          content
         }
       )
     }
