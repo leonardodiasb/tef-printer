@@ -17,8 +17,8 @@ export function createMenu(
           },
           {
             label: 'DevTools',
-            click: () => mainWindow.webContents.openDevTools(),
-            visible: isDev()
+            click: () => mainWindow.webContents.openDevTools()
+            // visible: isDev()
           },
           {
             label: 'Check for updates',

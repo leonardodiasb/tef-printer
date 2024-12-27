@@ -76,7 +76,7 @@ const COM_PORTS = [
 export const TefConfiguration = () => {
   const { config, setConfig } = useContext(ConfigContext)
   const navigate = useNavigate()
-  const [loading, setLoading] = useState(false)
+  const [loading] = useState(false)
   const [selectedIntegrationType, setSelectedIntegrationType] = useState('')
   const [stoneCode, setStoneCode] = useState('')
   const [COMPort, setCOMPort] = useState('')

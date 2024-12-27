@@ -22,7 +22,7 @@ type EventPayloadMapping = {
   updateNotificationWindow: UpdateNotificationWindow
   closeNotificationWindow: void
   writeConfigFile: StoneConfig
-  readConfigFile: StoneConfig
+  readConfigFile: any
 }
 
 type UnsubscribeFunction = () => void

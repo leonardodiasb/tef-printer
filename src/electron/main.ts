@@ -46,18 +46,24 @@ app.on('ready', () => {
   })
 
   mainWindow.webContents.on('did-finish-load', () => {
-    const config = fs.readFileSync(
-      process.platform === 'darwin'
-        ? path.join(app.getPath('userData'), 'config.json')
-        : path.join(app.getAppPath(), 'config.json'),
-      'utf8'
-    )
+    // const config = fs.readFileSync(
+    //   process.platform === 'darwin'
+    //     ? path.join(app.getPath('userData'), 'config.json')
+    //     : path.join(app.getAppPath(), 'config.json'),
+    //   'utf8'
+    // )
 
+    // if (config) {
     ipcWebContentsSend(
       'readConfigFile',
       mainWindow.webContents,
-      JSON.parse(config)
+      // JSON.parse(config)
+      {
+        appPath: app.getAppPath(),
+        appDataPath: app.getPath('userData')
+      }
     )
+    // }
   })
 
   createTray(mainWindow)

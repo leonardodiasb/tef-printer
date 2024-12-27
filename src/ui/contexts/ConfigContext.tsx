@@ -22,7 +22,8 @@ export const ConfigProvider = ({ children }: ConfigProviderProps) => {
 
   useEffect(() => {
     return window.electron.readConfigFile((conf) => {
-      setConfig(conf)
+      // setConfig(conf)
+      console.log('conf', conf)
     })
   }, [])
 
