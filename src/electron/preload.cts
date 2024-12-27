@@ -2,11 +2,16 @@ import electron from 'electron'
 
 electron.contextBridge.exposeInMainWorld('electron', {
   downloadAppUpdate: () => ipcInvoke('downloadAppUpdate'),
-  installUpdateAndQuit: () => ipcInvoke('installUpdateAndQuit'),
   updateNotificationWindow: (callback) => {
     ipcOn('updateNotificationWindow', (update) => callback(update))
   },
-  closeNotificationWindow: () => ipcInvoke('closeNotificationWindow')
+  closeNotificationWindow: () => ipcInvoke('closeNotificationWindow'),
+  writeConfigFile: (payload) => {
+    ipcSend('writeConfigFile', payload)
+  },
+  readConfigFile: (callback) => {
+    ipcOn('readConfigFile', (payload) => callback(payload))
+  }
 } satisfies Window['electron'])
 
 function ipcInvoke<Key extends keyof EventPayloadMapping>(

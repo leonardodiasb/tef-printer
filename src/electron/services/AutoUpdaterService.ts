@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable prettier/prettier */
 import { app, BrowserWindow } from 'electron'
 import electronUpdater from 'electron-updater'
@@ -77,7 +78,6 @@ export default class AutoUpdaterService implements AutoUpdaterServiceInterface {
     autoUpdater.on('update-downloaded', (info) => {
       this.updateNotificationContent('UPDATE_DOWNLOADED', info)
       autoUpdater.quitAndInstall()
-      // this.closeNotificationWindowAfterDelay()
     })
 
     autoUpdater.on('error', (error) => {
@@ -96,6 +96,7 @@ export default class AutoUpdaterService implements AutoUpdaterServiceInterface {
       alwaysOnTop: true,
       parent: this.mainWindow,
       modal: true,
+      frame: false,
       webPreferences: {
         contextIsolation: true,
         nodeIntegration: false,

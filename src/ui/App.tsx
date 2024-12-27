@@ -1,10 +1,11 @@
 import './App.css'
+import { AppRouter } from './routes'
 
 function App() {
   return (
     <div className="App">
       <div className="main">
-        <div>App version v0.0.1</div>
+        <AppRouter />
       </div>
     </div>
   )

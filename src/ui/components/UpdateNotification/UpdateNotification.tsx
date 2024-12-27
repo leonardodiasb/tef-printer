@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
-import { ClipLoader } from 'react-spinners'
-import { Button, IconClose } from 'takeat-design-system-ui-kit'
+import { Button, IconClose, Spinner } from 'takeat-design-system-ui-kit'
 import TktSvg from '../../../assets/Tkt.svg'
 
 const UpdateNotification = () => {
@@ -90,7 +89,7 @@ const UpdateNotification = () => {
                 Procurando por atualizações...
               </p>
               <div style={{ marginBottom: 8 }}>
-                <ClipLoader color="black" size={30} speedMultiplier={0.7} />
+                <Spinner size={30} color="#000" />
               </div>
             </>
           )}
@@ -173,7 +172,7 @@ const UpdateNotification = () => {
                 Baixando... {downloadProgressPercentage}%
               </p>
               <div style={{ marginBottom: 8 }}>
-                <ClipLoader color="black" size={30} speedMultiplier={0.7} />
+                <Spinner size={30} color="#000" />
               </div>
             </>
           )}
@@ -183,7 +182,7 @@ const UpdateNotification = () => {
                 Reiniciando aplicativo para instalação.
               </p>
               <div style={{ marginBottom: 8 }}>
-                <ClipLoader color="black" size={30} speedMultiplier={0.7} />
+                <Spinner size={30} color="#000" />
               </div>
             </>
           )}

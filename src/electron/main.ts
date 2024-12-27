@@ -1,10 +1,11 @@
 import { app, BrowserWindow, Menu } from 'electron'
 import path from 'path'
-import { ipcMainHandle, isDev } from './utils.js'
+import { ipcMainHandle, ipcMainOn, ipcWebContentsSend, isDev } from './utils.js'
 import { getPreloadPath } from './pathResolver.js'
 import { createTray } from './tray.js'
 import { createMenu } from './menu.js'
 import AutoUpdaterService from './services/AutoUpdaterService.js'
+import fs from 'fs'
 
 Menu.setApplicationMenu(null)
 
@@ -29,6 +30,34 @@ app.on('ready', () => {
 
   ipcMainHandle('closeNotificationWindow', () => {
     autoUpdaterService.closeNotificationWindow()
+  })
+
+  ipcMainOn('writeConfigFile', async (payload) => {
+    try {
+      const configPath =
+        process.platform === 'darwin'
+          ? path.join(app.getPath('userData'), 'config.json')
+          : path.join(app.getAppPath(), 'config.json')
+
+      fs.writeFileSync(configPath, JSON.stringify(payload))
+    } catch (error) {
+      console.log('Error', error)
+    }
+  })
+
+  mainWindow.webContents.on('did-finish-load', () => {
+    const config = fs.readFileSync(
+      process.platform === 'darwin'
+        ? path.join(app.getPath('userData'), 'config.json')
+        : path.join(app.getAppPath(), 'config.json'),
+      'utf8'
+    )
+
+    ipcWebContentsSend(
+      'readConfigFile',
+      mainWindow.webContents,
+      JSON.parse(config)
+    )
   })
 
   createTray(mainWindow)
