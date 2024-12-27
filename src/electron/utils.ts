@@ -43,7 +43,7 @@ export function validateEventFrame(frame: WebFrameMain) {
     return
   }
   if (frame.url === pathToFileURL(getUINotificationPath()).toString()) return
-  if (frame.url !== pathToFileURL(getUIPath()).toString()) {
+  if (!frame.url.includes(pathToFileURL(getUIPath()).toString())) {
     throw new Error('Malicious event')
   }
 }

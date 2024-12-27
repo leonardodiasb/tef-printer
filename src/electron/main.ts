@@ -1,7 +1,7 @@
 import { app, BrowserWindow, Menu } from 'electron'
 import path from 'path'
 import { ipcMainHandle, ipcMainOn, ipcWebContentsSend, isDev } from './utils.js'
-import { getPreloadPath } from './pathResolver.js'
+import { getInstallDirectoryPath, getPreloadPath } from './pathResolver.js'
 import { createTray } from './tray.js'
 import { createMenu } from './menu.js'
 import AutoUpdaterService from './services/AutoUpdaterService.js'
@@ -24,6 +24,8 @@ app.on('ready', () => {
 
   const autoUpdaterService = new AutoUpdaterService(mainWindow)
 
+  const installDir = getInstallDirectoryPath()
+
   ipcMainHandle('downloadAppUpdate', async () => {
     autoUpdaterService.updateApp()
   })
@@ -32,12 +34,11 @@ app.on('ready', () => {
     autoUpdaterService.closeNotificationWindow()
   })
 
-  ipcMainOn('writeConfigFile', async (payload) => {
+  ipcMainOn('writeConfigFile', (payload) => {
     try {
-      const configPath =
-        process.platform === 'darwin'
-          ? path.join(app.getPath('userData'), 'config.json')
-          : path.join(app.getAppPath(), 'config.json')
+      const configPath = isDev()
+        ? path.join(app.getPath('userData'), 'config.json')
+        : path.join(installDir, 'config.json')
 
       fs.writeFileSync(configPath, JSON.stringify(payload))
     } catch (error) {
@@ -46,24 +47,24 @@ app.on('ready', () => {
   })
 
   mainWindow.webContents.on('did-finish-load', () => {
-    // const config = fs.readFileSync(
-    //   process.platform === 'darwin'
-    //     ? path.join(app.getPath('userData'), 'config.json')
-    //     : path.join(app.getAppPath(), 'config.json'),
-    //   'utf8'
-    // )
+    try {
+      const config = fs.readFileSync(
+        isDev()
+          ? path.join(app.getPath('userData'), 'config.json')
+          : path.join(installDir, 'config.json'),
+        'utf8'
+      )
 
-    // if (config) {
-    ipcWebContentsSend(
-      'readConfigFile',
-      mainWindow.webContents,
-      // JSON.parse(config)
-      {
-        appPath: app.getAppPath(),
-        appDataPath: app.getPath('userData')
+      if (config) {
+        ipcWebContentsSend(
+          'readConfigFile',
+          mainWindow.webContents,
+          JSON.parse(config)
+        )
       }
-    )
-    // }
+    } catch (error) {
+      console.log('Error', error)
+    }
   })
 
   createTray(mainWindow)
