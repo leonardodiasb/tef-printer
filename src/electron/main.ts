@@ -24,8 +24,10 @@ app.on('ready', () => {
   }
   const autoUpdaterService = new AutoUpdaterService(mainWindow)
   const installDir = getInstallDirectoryPath()
-  const server = new Server()
-  server.start()
+  if (process.platform === 'win32') {
+    const server = new Server(mainWindow)
+    server.start()
+  }
 
   ipcMainHandle('downloadAppUpdate', async () => {
     autoUpdaterService.updateApp()

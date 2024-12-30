@@ -2,9 +2,11 @@
   "compilerOptions": {
     "strict": true,
     "target": "ESNext",
-    "module": "NodeNext",
+    "module": "CommonJS",
     "outDir": "../../dist-electron",
     "skipLibCheck": true,
     "types": ["../../types"],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true  
   }
 }

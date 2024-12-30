@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable prettier/prettier */
 import { app, BrowserWindow } from 'electron'
-import electronUpdater from 'electron-updater'
+const electronUpdater = require('electron-updater')
 import { ipcWebContentsSend, isDev } from '../utils.js'
 import path from 'path'
 import { getPreloadPath } from '../pathResolver.js'
@@ -59,28 +59,28 @@ export default class AutoUpdaterService implements AutoUpdaterServiceInterface {
       )
     })
 
-    autoUpdater.on('update-available', (info) => {
+    autoUpdater.on('update-available', (info: any) => {
       this.updateNotificationContent('UPDATE_AVAILABLE', info)
     })
 
-    autoUpdater.on('update-not-available', (info) => {
+    autoUpdater.on('update-not-available', (info: any) => {
       this.updateNotificationContent('UPDATE_NOT_AVAILABLE', info)
       // this.closeNotificationWindowAfterDelay()
     })
 
-    autoUpdater.on('download-progress', (progress) => {
+    autoUpdater.on('download-progress', (progress: { percent: number }) => {
       this.updateNotificationContent('DOWNLOAD_PROGRESS', {
         progress,
         string: `Download progress: ${progress.percent.toFixed(2)}%`
       })
     })
 
-    autoUpdater.on('update-downloaded', (info) => {
+    autoUpdater.on('update-downloaded', (info: any) => {
       this.updateNotificationContent('UPDATE_DOWNLOADED', info)
       autoUpdater.quitAndInstall()
     })
 
-    autoUpdater.on('error', (error) => {
+    autoUpdater.on('error', (error: any) => {
       this.updateNotificationContent('ERROR', error)
       // this.closeNotificationWindowAfterDelay()
     })
