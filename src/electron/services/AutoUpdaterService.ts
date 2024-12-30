@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable prettier/prettier */
 import { app, BrowserWindow } from 'electron'
-const electronUpdater = require( 'electron-updater')
+const electronUpdater = require('electron-updater')
 import { ipcWebContentsSend, isDev } from '../utils.js'
 import path from 'path'
 import { getPreloadPath } from '../pathResolver.js'
 
-console.log('ASDF', electronUpdater)
 const { autoUpdater } = electronUpdater
 
 export interface AutoUpdaterServiceInterface {
