@@ -18,6 +18,10 @@ export function getUINotificationPath() {
   return path.join(app.getAppPath(), '/dist-react/notification.html')
 }
 
+export function getUIPrintablePagePath() {
+  return path.join(app.getAppPath(), '/dist-react/printablePage.html')
+}
+
 export function getAssetPath() {
   return path.join(app.getAppPath(), isDev() ? '.' : '..', '/src/assets')
 }

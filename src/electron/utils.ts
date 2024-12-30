@@ -1,6 +1,10 @@
 import { ipcMain, WebContents, WebFrameMain } from 'electron'
 import { pathToFileURL } from 'url'
-import { getUINotificationPath, getUIPath } from './pathResolver.js'
+import {
+  getUINotificationPath,
+  getUIPath,
+  getUIPrintablePagePath
+} from './pathResolver.js'
 
 export function isDev(): boolean {
   return process.env.NODE_ENV === 'development'
@@ -43,6 +47,7 @@ export function validateEventFrame(frame: WebFrameMain) {
     return
   }
   if (frame.url === pathToFileURL(getUINotificationPath()).toString()) return
+  if (frame.url === pathToFileURL(getUIPrintablePagePath()).toString()) return
   if (!frame.url.includes(pathToFileURL(getUIPath()).toString())) {
     throw new Error('Malicious event')
   }
