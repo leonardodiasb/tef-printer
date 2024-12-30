@@ -149,6 +149,97 @@ class Server {
       }, 300)
     })
 
+    this.app.post('/print-stone-receipt', async (req: any, res: any) => {
+      const { receipt } = req.body
+      const { clientVia } = receipt
+      let defaultPrinter: string | undefined
+      let defaultPrinterStatus: number | undefined = 0
+
+      await this.mainWindow.webContents.getPrintersAsync().then((printers) => {
+        defaultPrinter = printers.find((printer) => printer.isDefault)?.name
+        defaultPrinterStatus = printers.find(
+          (printer) => printer.isDefault
+        )?.status
+      })
+      if (!defaultPrinter || defaultPrinter === undefined) {
+        return res.status(500).json({ error: 'No default printer found' })
+      }
+      if (defaultPrinterStatus !== 0) {
+        return res.status(500).json({ error: 'Default printer is not OK' })
+      }
+
+      try {
+        const printableWindow = new BrowserWindow({
+          show: false
+        })
+        const htmlContent = `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>Printable Page</title>
+            </head>
+            <body>
+              <pre>${clientVia}</pre>
+            </body>
+          </html>
+        `
+        printableWindow.loadURL(
+          'data:text/html;charset=utf-8,' +
+            encodeURIComponent(`
+            ${htmlContent}
+          `)
+        )
+        printableWindow.webContents.on('did-finish-load', () => {
+          printableWindow.webContents.print(
+            {
+              silent: true,
+              printBackground: false,
+              deviceName: defaultPrinter,
+              margins: {
+                marginType: 'none'
+              }
+            },
+            (success, errorType) => {
+              printableWindow.close()
+              if (!success) {
+                console.log('Error printing', errorType)
+                return res
+                  .status(500)
+                  .send('Error sending to printer:', errorType)
+              }
+            }
+          )
+        })
+      } catch (error) {
+        console.log('Error printing', error)
+        return res.status(500).send('Error sending to printer:', error)
+      }
+      const command = `powershell.exe -Command "Get-WmiObject -Class Win32_PrintJob | Select-Object JobStatus, Status"`
+
+      let counter = 0
+      const interval = setInterval(async () => {
+        let isBlocked = false
+        let isPrinted = false
+        await this.isPrinterQueueBlocked(command).then((result: T) => {
+          if (result.error) {
+            isBlocked = true
+          }
+          if (result.printed) {
+            isPrinted = true
+          }
+        })
+        if (isBlocked) {
+          clearInterval(interval)
+          return res.status(500).json({ error: 'Printer queue is blocked' })
+        } else if (isPrinted || counter > 3) {
+          clearInterval(interval)
+          return res.status(200).json({ message: 'Printed' })
+        } else {
+          counter += 1
+        }
+      }, 300)
+    })
+
     this.app.get('/health', (_req: any, res: any) => {
       res.send('Server is alive')
     })
